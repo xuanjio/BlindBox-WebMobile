@@ -2,14 +2,13 @@
 </script>
 
 <template>
-    <div id="home-view">
-        home view
+    <div id="battle-view">
+        
     </div>
 </template>
 
 <style scoped lang="less">
-#home-view {
+#battle-view {
     min-height: calc(100vh - 500px);
 }
 </style>
-

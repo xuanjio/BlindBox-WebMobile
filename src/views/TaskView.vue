@@ -2,14 +2,13 @@
 </script>
 
 <template>
-    <div id="home-view">
-        home view
+    <div id="task-view">
+        
     </div>
 </template>
 
 <style scoped lang="less">
-#home-view {
+#task-view {
     min-height: calc(100vh - 500px);
 }
 </style>
-
