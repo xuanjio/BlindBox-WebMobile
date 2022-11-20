@@ -225,6 +225,5 @@ function toggleSideUser() {
   background-size: 100%;
   min-height: calc(100vh - 100px);
   margin-top: 100px;
-  position: relative;
 }
 </style>
