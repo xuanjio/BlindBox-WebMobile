@@ -6,17 +6,19 @@ import SideMenu from '@/components/SideMenu.vue'
 import SideUser from '@/components/SideUser.vue'
 import SideBar from '@/components/SideBar.vue'
 import ViewFooter from '@/components/ViewFooter.vue'
+import SignInBox from "@/components/SignInBox.vue";
+import SignUpBox from "@/components/SignUpBox.vue";
 
 const route = useRoute()
-const navTitle = ref("skins")
-const isLogined = ref(true)
+const isLogined = ref(false)
 const avatarUrl = ref("https://95-csgo.oss-cn-beijing.aliyuncs.com/usericon/2022-05-24/36a810538eeb462c8565253188929854.jpg")
 const frameUrl = ref("https://95-csgo.oss-cn-beijing.aliyuncs.com/file/2022-05-16/6c8ed872da224f948ebe56b927f00bdd.png")
 const blanceGold = ref(988.58)
 const blanceBullet = ref(2000)
 const showSideMenu = ref(false)
 const showSideUser = ref(false)
-const currentViewName = ref("home")
+const showSignIn = ref(false)
+const showSignUp = ref(false)
 
 function toggleSideMenu() {
   showSideMenu.value = !showSideMenu.value
@@ -30,7 +32,7 @@ function toggleSideUser() {
 </script>
 
 <template>
-  <!-- header -->
+  <!-- 头部导航条 -->
   <div id="header">
     <!-- 靠左 -->
     <div class="left">
@@ -48,8 +50,8 @@ function toggleSideUser() {
     <div class="right">
       <!-- 登录 注册 -->
       <div class="sign" v-if="isLogined == false">
-        <p>登录</p>
-        <p>注册</p>
+        <p @click="showSignIn = true">登录</p>
+        <p @click="showSignUp = true">注册</p>
       </div>
       <!-- 登录用户信息 -->
       <div class="user" v-if="isLogined == true">
@@ -77,24 +79,44 @@ function toggleSideUser() {
     </div>
 
   </div>
-  <!-- popup menu -->
-  <div id="popup-menu">
-    <van-popup v-model:show="showSideMenu" :style="{width:'55%',height:'100%'}" position="left" :overlay-style="{background:'none'}">
-      <SideMenu @hide="showSideMenu = false"/>
-    </van-popup>
-  </div>
-  <!-- popup user -->
-  <div id="popup-user">
-    <van-popup v-model:show="showSideUser" :style="{width:'55%',height:'100%'}" position="right" :overlay-style="{background:'none'}">
-      <SideUser @hide="showSideUser = false"/>
-    </van-popup>
-  </div>
-  <!-- side bar -->
-  <SideBar />
+
   <!-- 路由页面容器 -->
   <div id="container">
     <RouterView />
     <ViewFooter />
+  </div>
+
+  <!-- 左侧边页面导航栏 -->
+  <div id="popup-menu">
+    <van-popup v-model:show="showSideMenu" :style="{ width: '55%', height: '100%' }" position="left"
+      :overlay-style="{ background: 'none' }">
+      <SideMenu @hide="showSideMenu = false" />
+    </van-popup>
+  </div>
+
+  <!-- 右侧边用户导航栏 -->
+  <div id="popup-user">
+    <van-popup v-model:show="showSideUser" :style="{ width: '55%', height: '100%' }" position="right"
+      :overlay-style="{ background: 'none' }">
+      <SideUser @hide="showSideUser = false" />
+    </van-popup>
+  </div>
+
+  <!-- 右侧边工具栏 -->
+  <SideBar />
+
+  <!-- 登录 -->
+  <div class="sign-dialog">
+    <van-dialog v-model:show="showSignIn" :show-confirm-button=false>
+      <SignInBox @close="showSignIn = false" />
+    </van-dialog>
+  </div>
+
+  <!-- 注册 -->
+  <div class="sign-dialog">
+    <van-dialog v-model:show="showSignUp" :show-confirm-button=false>
+      <SignUpBox @close="showSignUp = false" />
+    </van-dialog>
   </div>
 </template>
 
@@ -187,8 +209,9 @@ function toggleSideUser() {
             width: 32px;
             height: 32px;
           }
+
           &:last-child {
-            color: rgb(43, 188, 242); 
+            color: rgb(43, 188, 242);
           }
         }
       }
@@ -212,11 +235,23 @@ function toggleSideUser() {
     }
   }
 }
+
 #popup-menu:deep(.van-overlay) {
   z-index: 99 !important;
 }
+
 #popup-menu:deep(.van-popup) {
   z-index: 99 !important;
+}
+
+.sign-dialog:deep(.van-dialog) {
+  background: none;
+  border-radius: 0;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 // 路由页面容器

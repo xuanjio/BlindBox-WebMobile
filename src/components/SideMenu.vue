@@ -69,7 +69,7 @@ function clickItem(name: string) {
 <style scoped lang="less">
 #side-menu {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background-color: var(--main-black-color);
     padding-top: 100px;
     .side-menu-item {

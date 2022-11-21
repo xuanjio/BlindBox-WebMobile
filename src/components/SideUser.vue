@@ -92,9 +92,11 @@ function clickItem(name: string) {
 <style scoped lang="less">
 #side-user {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background: url(@/assets/images/profile/bg_bottom.png) no-repeat bottom, var(--main-black-color);
     background-size: contain;
+    position: relative;
+    padding-bottom: 160px;
 
     .top {
         width: 100%;
