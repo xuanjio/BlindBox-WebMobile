@@ -5,14 +5,14 @@ defineEmits(["close"])
 const tabIndex = ref(0)
 // 账号 密码
 const account = ref("")
-const accountError = ref("*请输入正确的账号")
+const accountError = ref("")
 const password = ref("")
-const passwordError = ref("*密码不正确")
+const passwordError = ref("")
 // 手机号 验证码
 const phone = ref("")
-const phoneError = ref("*手机号已注册")
+const phoneError = ref("")
 const smscode = ref("")
-const smscodeError = ref("*验证码不正确")
+const smscodeError = ref("")
 const smscodeBtnText = ref("获取验证码")
 // 是否保存密码 是否同意协议隐私
 const isSaved = ref(false)
@@ -39,7 +39,7 @@ const isAgreed = ref(false)
                     <div class="icon">
                         <img src="@/assets/images/sign/icon_user.png" alt="account" />
                     </div>
-                    <input v-model="account" type="email" placeholder="请输入账号" />
+                    <input v-model="account" type="email" placeholder="请输入账号(手机号/邮箱)" />
                 </div>
                 <div class="error">{{ accountError }}</div>
             </div>
@@ -49,7 +49,7 @@ const isAgreed = ref(false)
                     <div class="icon">
                         <img src="@/assets/images/sign/icon_password.png" alt="password" />
                     </div>
-                    <input v-model="password" type="password" placeholder="请输入密码" />
+                    <input v-model="password" type="password" placeholder="请输入密码(6~16位)" minlength="6" maxlength="16" />
                 </div>
                 <div class="error">{{ passwordError }}</div>
             </div>
@@ -94,8 +94,8 @@ const isAgreed = ref(false)
             <p>steam一键登录</p>
         </div>
         <!-- 登录 去注册 -->
-        <div class="logout-register">
-            <div class="logout">登录</div>
+        <div class="login-register">
+            <div class="login">登录</div>
             <div class="register">去注册</div>
         </div>
     </div>
@@ -168,7 +168,7 @@ const isAgreed = ref(false)
     }
 
     .cell {
-        margin-top: 60px;
+        margin-top: 70px;
         padding: 0 80px;
 
         .content {
@@ -218,7 +218,7 @@ const isAgreed = ref(false)
         }
 
         .error {
-            height: 40px;
+            height: 30px;
             margin-left: 80px;
             color: var(--main-orange-color);
             font-size: 20px;
@@ -309,12 +309,12 @@ const isAgreed = ref(false)
         }
     }
 
-    .logout-register {
+    .login-register {
         margin-top: 40px;
         padding: 0 80px;
         position: relative;
 
-        .logout {
+        .login {
             margin: 0 auto;
             width: 246px;
             height: 62px;

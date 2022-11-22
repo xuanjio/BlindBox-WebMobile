@@ -2,7 +2,7 @@
   "name": "webmobile",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host 192.168.5.22",
+    "dev": "vite --host 192.168.5.25",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
     "build-only": "vite build",
