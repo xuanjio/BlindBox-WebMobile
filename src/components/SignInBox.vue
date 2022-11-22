@@ -55,7 +55,7 @@ const isAgreed = ref(false)
             </div>
         </div>
         <!-- 手机验证码登录 -->
-        <div v-show="tabIndex == 1" style="width: 100%;">
+        <div v-show="tabIndex == 1">
             <!-- 手机号 -->
             <div class="cell">
                 <div class="content">
@@ -79,6 +79,25 @@ const isAgreed = ref(false)
             </div>
         </div>
         <!-- 记住密码 忘记密码 -->
+        <div class="saved-forgot">
+            <span v-show="tabIndex == 0" :class="{ active: isSaved }" @click="isSaved = !isSaved">记住密码</span>
+            <span>忘记密码</span>
+        </div>
+        <!-- 同意协议隐私 -->
+        <div class="agree">
+            <p :class="{ active: isAgreed }" @click="isAgreed = !isAgreed">
+                我已满18岁，并阅读和同意<span>《用户协议》</span>和<span>《隐私政策》</span>承诺理性消费</p>
+        </div>
+        <!-- steam 一键登录 -->
+        <div class="steam">
+            <img src="@/assets/images/sign/icon_steam.png" alt="steam" />
+            <p>steam一键登录</p>
+        </div>
+        <!-- 登录 去注册 -->
+        <div class="logout-register">
+            <div class="logout">登录</div>
+            <div class="register">去注册</div>
+        </div>
     </div>
 </template>
 
@@ -194,7 +213,7 @@ const isAgreed = ref(false)
                 text-align: center;
                 border: var(--main-orange-color) solid 2px;
                 border-radius: 4px;
-                
+
             }
         }
 
@@ -204,6 +223,117 @@ const isAgreed = ref(false)
             color: var(--main-orange-color);
             font-size: 20px;
             line-height: 40px;
+        }
+    }
+
+    .saved-forgot {
+        margin-top: 20px;
+        padding: 0 80px;
+        height: 24px;
+
+        span {
+            font-size: 24px;
+            line-height: 24px;
+            color: white;
+
+            &:first-child {
+                &::before {
+                    display: inline-block;
+                    content: "";
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 10px;
+                    background: url(@/assets/images/sign/icon_unselected.png) no-repeat center;
+                    background-size: contain;
+                }
+
+                &.active {
+                    &::before {
+                        background: url(@/assets/images/sign/icon_selected.png) no-repeat center;
+                        background-size: contain;
+                    }
+                }
+            }
+
+            &:last-child {
+                float: right;
+            }
+        }
+    }
+
+    .agree {
+        padding: 0 80px;
+        margin-top: 40px;
+
+        p {
+            font-size: 20px;
+            line-height: 30px;
+            color: white;
+
+            span {
+                font-size: 20px;
+                line-height: 30px;
+                color: var(--main-orange-color);
+            }
+
+            &::before {
+                display: inline-block;
+                content: "";
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                background: url(@/assets/images/sign/icon_unselected.png) no-repeat center;
+                background-size: contain;
+            }
+
+            &.active {
+                &::before {
+                    background: url(@/assets/images/sign/icon_selected.png) no-repeat center;
+                    background-size: contain;
+                }
+            }
+        }
+    }
+
+    .steam {
+        margin-top: 40px;
+        text-align: center;
+
+        img {
+            width: 80px;
+            height: 80px;
+        }
+
+        p {
+            font-size: 24px;
+        }
+    }
+
+    .logout-register {
+        margin-top: 40px;
+        padding: 0 80px;
+        position: relative;
+
+        .logout {
+            margin: 0 auto;
+            width: 246px;
+            height: 62px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-black-color);
+            text-align: center;
+            line-height: 62px;
+            background: url(@/assets/images/common/btn_submit.png) no-repeat center;
+            background-size: contain;
+        }
+
+        .register {
+            font-size: 24px;
+            line-height: 24px;
+            color: var(--main-orange-color);
+            position: absolute;
+            top: 19px;
+            right: 80px;
         }
     }
 }
