@@ -1,2 +1,2 @@
 # BlindBox-WebMobile
-Vue3+TypeScript++less
+Vue3+TypeScript+vant+less
