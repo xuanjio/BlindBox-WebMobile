@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from "@/stores/user";
 const HomeView = () => import('@/views/HomeView.vue')
 const RollView = () => import('@/views/RollView.vue')
 const ExchangeView = () => import('@/views/ExchangeView.vue')
@@ -16,6 +17,7 @@ const PromotionView = () => import('@/views/PromotionView.vue')
 const MessageView = () => import('@/views/MessageView.vue')
 const TaskView = () => import('@/views/TaskView.vue')
 const DownloadView = () => import('@/views/DownloadView.vue')
+const BlindBoxView = () => import('@/views/BlindBoxView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,7 +43,8 @@ const router = createRouter({
       name: 'exchange',
       component: ExchangeView,
       meta: {
-        title:'汰换合约'
+        title:'汰换合约',
+        requiresAuth: true
       }
     },
     {
@@ -97,7 +100,8 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
       meta: {
-        title:'个人资料'
+        title:'个人资料',
+        requiresAuth: true
       }
     },
     {
@@ -105,7 +109,8 @@ const router = createRouter({
       name: 'knapsack',
       component: KnapsackView,
       meta: {
-        title:'我的背包'
+        title:'我的背包',
+        requiresAuth: true
       }
     },
     {
@@ -113,7 +118,8 @@ const router = createRouter({
       name: 'recharge',
       component: RechargeView,
       meta: {
-        title:'账户充值'
+        title:'账户充值',
+        requiresAuth: true
       }
     },
     {
@@ -121,7 +127,8 @@ const router = createRouter({
       name: 'user-data',
       component: UserDataView,
       meta: {
-        title:'个人明细'
+        title:'个人明细',
+        requiresAuth: true
       }
     },
     {
@@ -129,7 +136,8 @@ const router = createRouter({
       name: 'promotion',
       component: PromotionView,
       meta: {
-        title:'推广分红'
+        title:'推广分红',
+        requiresAuth: true
       }
     },
     {
@@ -137,7 +145,8 @@ const router = createRouter({
       name: 'message',
       component: MessageView,
       meta: {
-        title:'站内信息'
+        title:'站内信息',
+        requiresAuth: true
       }
     },
     {
@@ -145,7 +154,8 @@ const router = createRouter({
       name: 'task',
       component: TaskView,
       meta: {
-        title:'活动任务'
+        title:'活动任务',
+        requiresAuth: true
       }
     },
     {
@@ -156,7 +166,24 @@ const router = createRouter({
         title:'APP下载'
       }
     },
+    {
+      path: '/blind-box',
+      name: 'blind-box',
+      component: BlindBoxView,
+      meta: {
+        title:'skins'
+      }
+    },
   ]
+})
+
+router.beforeEach((to, from, next)=>{
+  const mainStore = useUserStore()
+  if (to.meta.requiresAuth && mainStore.isLogined == false) {
+    mainStore.showLoginDialog = true
+  } else {
+    next()
+  }
 })
 
 export default router

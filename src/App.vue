@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, type ComputedRef, type Ref } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
+import { useUserStore } from './stores/user'
 import AvatarFrame from '@/components/AvatarFrame.vue'
 import SideMenu from '@/components/SideMenu.vue'
 import SideUser from '@/components/SideUser.vue'
@@ -8,18 +9,15 @@ import SideBar from '@/components/SideBar.vue'
 import ViewFooter from '@/components/ViewFooter.vue'
 import SignInBox from "@/components/SignInBox.vue";
 import SignUpBox from "@/components/SignUpBox.vue";
+import ResetPasswordBox from "@/components/ResetPasswordBox.vue";
 
 const route = useRoute()
-const isLogined = ref(false)
-const avatarUrl = ref("https://95-csgo.oss-cn-beijing.aliyuncs.com/usericon/2022-05-24/36a810538eeb462c8565253188929854.jpg")
-const frameUrl = ref("https://95-csgo.oss-cn-beijing.aliyuncs.com/file/2022-05-16/6c8ed872da224f948ebe56b927f00bdd.png")
-const blanceGold = ref(988.58)
-const blanceBullet = ref(2000)
+const userStore = useUserStore()
 const showSideMenu = ref(false)
 const showSideUser = ref(false)
-const showSignIn = ref(false)
 const showSignUp = ref(false)
-
+const showResetPassword = ref(false)
+ 
 function toggleSideMenu() {
   showSideMenu.value = !showSideMenu.value
 }
@@ -49,29 +47,29 @@ function toggleSideUser() {
     <!-- 靠右 -->
     <div class="right">
       <!-- 登录 注册 -->
-      <div class="sign" v-if="isLogined == false">
-        <p @click="showSignIn = true">登录</p>
+      <div class="sign" v-if="!userStore.isLogined">
+        <p @click="userStore.showLoginDialog = true">登录</p>
         <p @click="showSignUp = true">注册</p>
       </div>
       <!-- 登录用户信息 -->
-      <div class="user" v-if="isLogined == true">
+      <div class="user" v-if="userStore.isLogined">
         <!-- 金币-子弹 -->
         <div class="data">
           <!-- 金币余额 -->
           <div class="blance">
             <img src="./assets/images/common/icon_gold.png" alt="" />
-            {{ blanceGold }}
+            {{ userStore.userInfo.goldBalance }}
           </div>
           <!-- 弹药余额 -->
           <div class="blance">
             <img src="./assets/images/common/icon_bullet.png" alt="" />
-            {{ blanceBullet }}
+            {{ userStore.userInfo.bulletBalance }}
           </div>
         </div>
         <!-- 头像 -->
         <div class="avatar" @click="toggleSideUser">
           <!-- 头像头像框 -->
-          <AvatarFrame :avatar-url="avatarUrl" :frame-url="frameUrl" />
+          <AvatarFrame :avatar-url="userStore.userInfo.avatarUrl" :frame-url="userStore.userInfo.frameUrl" />
           <!-- 未读消息红点 -->
           <div class="unreaded"></div>
         </div>
@@ -107,17 +105,25 @@ function toggleSideUser() {
 
   <!-- 登录 -->
   <div class="sign-dialog">
-    <van-dialog v-model:show="showSignIn" :show-confirm-button=false>
-      <SignInBox @close="showSignIn = false" />
+    <van-dialog v-model:show="userStore.showLoginDialog" :show-confirm-button=false>
+      <SignInBox @close="userStore.showLoginDialog = false" @to-register="showSignUp = true" @to-reset-password="showResetPassword = true" />
     </van-dialog>
   </div>
 
   <!-- 注册 -->
   <div class="sign-dialog">
     <van-dialog v-model:show="showSignUp" :show-confirm-button=false>
-      <SignUpBox @close="showSignUp = false" />
+      <SignUpBox @close="showSignUp = false" @to-login="userStore.showLoginDialog = true" />
     </van-dialog>
   </div>
+
+  <!-- 重置密码 -->
+  <div class="sign-dialog">
+    <van-dialog v-model:show="showResetPassword" :show-confirm-button=false>
+      <ResetPasswordBox @close="showResetPassword = false" @to-login="userStore.showLoginDialog = true" />
+    </van-dialog>
+  </div>
+
 </template>
 
 <style lang="less" scoped>
@@ -258,7 +264,7 @@ function toggleSideUser() {
 #container {
   background: url(./assets/images/common/bg_page.png) no-repeat top var(--main-gray-color);
   background-size: 100%;
-  min-height: calc(100vh - 100px);
   margin-top: 100px;
+  min-height: calc(100vh - 100px);
 }
 </style>

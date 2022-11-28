@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 const emits = defineEmits(["close", "toLogin"])
-// tabIndex: 0|手机注册，1|邮箱注册
+// tabIndex: 0|手机找回密码，1|邮箱找回密码
 const tabIndex = ref(0)
 // 手机号 
 const phone = ref("")
@@ -13,20 +13,15 @@ const mailError = ref("")
 const smscode = ref("")
 const smscodeError = ref("")
 const smscodeBtnText = ref("获取验证码")
-// 昵称
-const nickName = ref("")
-const nickNameError = ref("")
 // 密码
 const password = ref("")
 const passwordError = ref("")
-// 邀请码
-const invitationCode = ref("")
-const invitationCodeError = ref("")
-// 是否同意协议隐私
-const isAgreed = ref(false)
+// 重复密码
+const repassword = ref("")
+const repasswordError = ref("")
 
-// 点击注册按钮
-function register() {
+// 点击找回密码按钮
+function resetPassword() {
 
 }
 
@@ -39,16 +34,18 @@ function toLogin() {
 </script>
 
 <template>
-    <div id="sign-up">
+    <div id="reset-password">
         <!-- 关闭按钮 -->
         <div class="close" @click="$emit('close')">
             <img src="@/assets/images/sign/icon_close.png" alt="close">
         </div>
-        <!-- 手机注册/邮箱注册 -->
+
+        <!-- 手机找回密码/邮箱找回密码 -->
         <div class="tab-bar">
-            <div class="tab-item" :class="{ active: tabIndex == 0 }" @click="tabIndex = 0">手机注册</div>
-            <div class="tab-item" :class="{ active: tabIndex == 1 }" @click="tabIndex = 1">邮箱注册</div>
+            <div class="tab-item" :class="{ active: tabIndex == 0 }" @click="tabIndex = 0">手机找回密码</div>
+            <div class="tab-item" :class="{ active: tabIndex == 1 }" @click="tabIndex = 1">邮箱找回密码</div>
         </div>
+
         <!-- 手机号 -->
         <div class="cell" v-show="tabIndex == 0" >
             <div class="content">
@@ -59,6 +56,7 @@ function toLogin() {
             </div>
             <div class="error">{{ phoneError }}</div>
         </div>
+
         <!-- 邮箱 -->
         <div class="cell" v-show="tabIndex == 1">
             <div class="content">
@@ -69,6 +67,7 @@ function toLogin() {
             </div>
             <div class="error">{{ mailError }}</div>
         </div>
+
         <!-- 验证码 -->
         <div class="cell">
             <div class="content">
@@ -80,6 +79,7 @@ function toLogin() {
             </div>
             <div class="error"> {{ smscodeError }}</div>
         </div>
+
         <!-- 密码 -->
         <div class="cell">
             <div class="content">
@@ -90,41 +90,28 @@ function toLogin() {
             </div>
             <div class="error">{{ passwordError }}</div>
         </div>
-        <!-- 昵称 -->
+
+        <!-- 重复密码 -->
         <div class="cell">
             <div class="content">
                 <div class="icon">
-                    <img src="@/assets/images/sign/icon_user.png" alt="nickname" />
+                    <img src="@/assets/images/sign/icon_password.png" alt="password" />
                 </div>
-                <input v-model="nickName" type="text" placeholder="请输入昵称(选填)" />
+                <input v-model="repassword" type="password" placeholder="请确认密码(6~16位)" minlength="6" maxlength="16" />
             </div>
-            <div class="error">{{ nickNameError }}</div>
+            <div class="error">{{ repasswordError }}</div>
         </div>
-        <!-- 邀请码 -->
-        <div class="cell">
-            <div class="content">
-                <div class="icon">
-                    <img src="@/assets/images/sign/icon_invitation.png" alt="invitation" />
-                </div>
-                <input v-model="invitationCode" type="email" placeholder="请输入邀请码(选填)" />
-            </div>
-            <div class="error">{{ invitationCodeError }}</div>
-        </div>
-        <!-- 同意协议隐私 -->
-        <div class="agree">
-            <p :class="{ active: isAgreed }" @click="isAgreed = !isAgreed">
-                我已满18岁，并阅读和同意<span>《用户协议》</span>和<span>《隐私政策》</span>承诺理性消费</p>
-        </div>
-        <!-- 注册 去登录 -->
-        <div class="register-login">
-            <div class="register" @click="register">注册</div>
+        
+        <!-- 找回 去登录 -->
+        <div class="reset-login">
+            <div class="reset" @click="resetPassword">找回密码</div>
             <div class="login" @click="toLogin">去登录</div>
         </div>
     </div>
 </template>
 
 <style scoped lang="less">
-#sign-up {
+#reset-password {
     width: 699px;
     height: 1088px;
     background: url(@/assets/images/sign/signup_box.png) no-repeat center;
@@ -190,7 +177,7 @@ function toLogin() {
     }
 
     .cell {
-        margin-top: 40px;
+        margin-top: 80px;
         padding: 0 80px;
 
         .content {
@@ -247,46 +234,12 @@ function toLogin() {
         }
     }
 
-    .agree {
-        padding: 0 80px;
-        margin-top: 20px;
-
-        p {
-            font-size: 20px;
-            line-height: 30px;
-            color: white;
-
-            span {
-                font-size: 20px;
-                line-height: 30px;
-                color: var(--main-orange-color);
-            }
-
-            &::before {
-                display: inline-block;
-                content: "";
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
-                background: url(@/assets/images/sign/icon_unselected.png) no-repeat center;
-                background-size: contain;
-            }
-
-            &.active {
-                &::before {
-                    background: url(@/assets/images/sign/icon_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-        }
-    }
-
-    .register-login {
-        margin-top: 40px;
+    .reset-login {
+        margin-top: 60px;
         padding: 0 80px;
         position: relative;
 
-        .register {
+        .reset {
             margin: 0 auto;
             width: 246px;
             height: 62px;

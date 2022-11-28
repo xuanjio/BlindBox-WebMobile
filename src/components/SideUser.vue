@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AvatarFrame from './AvatarFrame.vue';
@@ -6,6 +7,7 @@ import AvatarFrame from './AvatarFrame.vue';
 const emits = defineEmits(['hide'])
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 const menus = [{
     icon: "src/assets/images/icons/personal.png",
     name: "profile",
@@ -57,19 +59,19 @@ function clickItem(name: string) {
         <div class="top">
             <!-- 头像 相框 -->
             <div class="avatar">
-                <AvatarFrame :avatar-url="avatarUrl" />
+                <AvatarFrame :avatar-url="userStore.userInfo.avatarUrl" />
             </div>
             <!-- 昵称 -->
-            <div class="nickname">昵称</div>
+            <div class="nickname">{{ userStore.userInfo.nickName }}</div>
             <!-- 金币余额 弹药余额 -->
             <div class="blance">
                 <div>
                     <img src="@/assets/images/common/icon_gold.png" alt="" />
-                    <span>998.89</span>
+                    <span>{{ userStore.userInfo.goldBalance }}</span>
                 </div>
                 <div>
                     <img src="@/assets/images/common/icon_bullet.png" alt="" />
-                    <span>20000</span>
+                    <span>{{ userStore.userInfo.bulletBalance }}</span>
                     <img src="@/assets/images/profile/arrow.png" alt="" />
                 </div>
             </div>

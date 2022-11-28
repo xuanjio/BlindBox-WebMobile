@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
-defineEmits(["close"])
+import { onMounted, ref } from "vue";
+import { Notify } from "vant";
+import { API } from "@/api/API";
+import { useUserStore } from "@/stores/user";
+
+const emits = defineEmits(["close", "toResetPassword", "toRegister"])
+const mainStore = useUserStore()
+
 // tabIndex: 0|账号密码登录，1|手机验证码登录
 const tabIndex = ref(0)
 // 账号 密码
@@ -17,6 +23,101 @@ const smscodeBtnText = ref("获取验证码")
 // 是否保存密码 是否同意协议隐私
 const isSaved = ref(false)
 const isAgreed = ref(false)
+
+onMounted(()=>{
+    let ss_account = localStorage.getItem("BX_ACCOUNT")
+    let ss_password = localStorage.getItem("BX_PASSWORD")
+    if (ss_account) {
+        account.value = ss_account
+    }
+    if (ss_password) {
+        password.value = ss_password
+    }
+})
+
+// 登录
+function login() {
+    if (tabIndex.value == 0) {
+        loginWithAccountAndPassword()
+    } else if (tabIndex.value == 1) {
+        loginWithSmsCode()
+    }
+}
+
+// 账号密码登录
+function loginWithAccountAndPassword() {
+    if (account.value.trim().length == 0) {
+        Notify({ type: 'danger', message: '请输入账号' })
+        return
+    }
+
+    if (password.value.trim().length == 0) {
+        Notify({ type: 'danger', message: '请输入密码' })
+        return
+    }
+
+    const mailRegex = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+    const phoneRegex = /^1\d{10}$/
+    let isMobile = '1'
+    if (mailRegex.test(account.value)) {
+        isMobile = '2'
+    } else if (phoneRegex.test(account.value)){
+        isMobile = '1'
+    } else {
+        Notify({ type: 'danger', message: '账号格式错误！' })
+        return
+    }
+
+    if (!isAgreed.value) {
+        Notify({ type: 'danger', message: '请勾选用户协议和隐私政策' })
+        return
+    }
+
+    let data = {
+        account: account.value,
+        password: password.value,
+        isMobile: isMobile,
+        device: 'mobile'
+    }
+    API.login(data, (result) => {
+        if (result.code == 200 && result.data.success) {
+            sessionStorage.setItem('API_TOKEN', result.data.data.token)
+            sessionStorage.setItem('API_USERID', result.data.data.userId)
+            mainStore.fetchUserInfo()
+            mainStore.fetchUserDetail()
+            if (isSaved) {
+                localStorage.setItem("BX_ACCOUNT", account.value)
+                localStorage.setItem("BX_PASSWORD", password.value)
+            } else {
+                localStorage.removeItem("BX_ACCOUNT")
+                localStorage.removeItem("BX_PASSWORD")
+            }
+            isSaved.value = false
+            isAgreed.value = false
+            Notify({ type: 'success', message: '登录成功！' })
+            emits('close')
+        } else {
+            Notify({ type: 'danger', message: result.msg })
+        }
+    })
+}
+
+// 手机验证码登录
+function loginWithSmsCode() {
+
+}
+
+// 忘记密码
+function toResetPassword() {
+    emits("close")
+    emits("toResetPassword")
+}
+
+// 去注册
+function toRegister() {
+    emits("close")
+    emits("toRegister")
+}
 
 </script>
 
@@ -81,7 +182,7 @@ const isAgreed = ref(false)
         <!-- 记住密码 忘记密码 -->
         <div class="saved-forgot">
             <span v-show="tabIndex == 0" :class="{ active: isSaved }" @click="isSaved = !isSaved">记住密码</span>
-            <span>忘记密码</span>
+            <span @click="toResetPassword">忘记密码</span>
         </div>
         <!-- 同意协议隐私 -->
         <div class="agree">
@@ -95,8 +196,8 @@ const isAgreed = ref(false)
         </div>
         <!-- 登录 去注册 -->
         <div class="login-register">
-            <div class="login">登录</div>
-            <div class="register">去注册</div>
+            <div class="login" @click="login">登录</div>
+            <div class="register" @click="toRegister">去注册</div>
         </div>
     </div>
 </template>

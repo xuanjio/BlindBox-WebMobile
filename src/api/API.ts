@@ -13,15 +13,14 @@ export class APIResult {
 type APIComplete = (result: APIResult) => void
 
 import axios from "axios"
-axios.defaults.baseURL = "https://m.95skins.com/api"
+axios.defaults.baseURL = "/api"
 axios.defaults.timeout = 10000
 
 export class API {
     private static post(url: string, data?: any, complete?: APIComplete) {
         const token = sessionStorage.getItem("API_TOKEN")
         axios.defaults.headers["Authorization"] = token
-        axios.post(url,data).then(function (response) {
-            console.log(response)
+        axios.post(url, data).then(function (response) {
             const result = new APIResult(response.status, response.statusText)
             if (response.data) {
                 if (response.data.status == 203) {
@@ -50,7 +49,7 @@ export class API {
 
     // 获取最近玩家开盒记录
     static fetchHomeHistoryList(size: number, complete: APIComplete) {
-        this.post("/index/getBoxOpenRecord", {size}, complete)
+        this.post("/index/getBoxOpenRecord", { size }, complete)
     }
 
     // 获取首页banner图片列表
@@ -61,5 +60,30 @@ export class API {
     // 获取首页盲盒列表
     static fetchHomeBoxList(complete: APIComplete) {
         this.post("/index/ListBoxZone", null, complete)
+    }
+
+    // 注册
+    static register(data: any, complete: APIComplete) {
+        this.post("/login/register", data, complete)
+    }
+
+    // 账号密码登录
+    static login(data: any, complete: APIComplete) {
+        this.post("/login/doLogin", data, complete)
+    }
+
+    // 用户信息
+    static fetchUserInfo(complete: APIComplete) {
+        this.post("/user/getUserInfo", null, complete)
+    }
+
+    // 用户详情
+    static fetchUserDetail(complete: APIComplete) {
+        this.post("/user/getUser", null, complete)
+    }
+
+    // 盲盒详情
+    static fetchBlindBoxDetail(id: number, complete: APIComplete) {
+        this.post("/openBox/getBoxData", {id}, complete)
     }
 }

@@ -1,25 +1,19 @@
 <script setup lang="ts">
 import { API, APIResult } from '@/api/API';
 import { ref, onMounted } from 'vue';
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Autoplay } from "swiper";
-import 'swiper/css';
-import AvatarFrame from '@/components/AvatarFrame.vue';
+import { useRouter } from "vue-router";
+import HistoryList from '@/components/HistoryList.vue';
 
+const router = useRouter()
 // 滚动公告
 const noticeText = ref("")
-// 历史掉落
-const historyList = ref(<any>[])
 // banner图片
 const bannerList = ref(<any>[])
 // 盲盒列表
 const boxList = ref(<any>[])
 
-const modules = [Autoplay]
-
 onMounted(() => {
     fetchNotice()
-    fetchHistoryList()
     fetchBannerList()
     fetchBoxList()
 })
@@ -28,14 +22,6 @@ function fetchNotice() {
     API.fetchHomeNotice((result: APIResult) => {
         if (result.code == 200 && result.data) {
             noticeText.value = result.data.replace(/<[^>]+>/g, '')
-        }
-    })
-}
-
-function fetchHistoryList() {
-    API.fetchHomeHistoryList(10, (result: APIResult) => {
-        if (result.code == 200 && result.data) {
-            historyList.value = result.data
         }
     })
 }
@@ -61,12 +47,9 @@ function clickBannerItem(redirectUrl: string) {
 }
 
 function clickBoxItem(boxId: number) {
-
+    router.push({ name: "blind-box", query: { id: boxId } })
 }
 
-function historyItemBg(data: string) {
-    return 'background-image: url(https://95-csgo.oss-cn-beijing.aliyuncs.com/' + eval('(' + data + ')').base + eval('(' + data + ')').mSmallBack + ');'
-}
 </script>
 
 <template>
@@ -75,24 +58,10 @@ function historyItemBg(data: string) {
         <div class="notice-bar">
             <van-notice-bar :text="noticeText" left-icon="volume-o" color="white" />
         </div>
-        <!-- 玩家最近开盒历史播报 -->
-        <div class="history-list">
-            <Swiper :modules="modules" :space-between="10" :slides-per-view="3" :speed="4000"
-                :autoplay="{ delay: 1000 }" :allow-touch-move="false" :loop="true">
-                <SwiperSlide class="history-item" v-for="history, index in historyList" :key="index"
-                    :style="historyItemBg(history.imageData)">
-                    <div class="skins">
-                        <img :src="history.goodsIcon" alt="history.goodsName">
-                    </div>
-                    <div class="user">
-                        <div class="avatar">
-                            <AvatarFrame :avatar-url="history.userIcon" :frame-url="history.iconUrl" />
-                        </div>
-                        <p>{{ history.userName }}</p>
-                    </div>
-                </SwiperSlide>
-            </Swiper>
-        </div>
+
+        <!-- 历史掉落 -->
+        <HistoryList />
+
         <!-- banner轮播图 -->
         <div class="banner-list">
             <van-swipe autoplay="3000" indicator-color="white" lazy-render>
@@ -101,6 +70,7 @@ function historyItemBg(data: string) {
                 </van-swipe-item>
             </van-swipe>
         </div>
+
         <!-- 盲盒列表 -->
         <div class="box-list">
             <!-- 分组 -->
@@ -154,55 +124,6 @@ function historyItemBg(data: string) {
 
         &:deep(.van-notice-bar__content) {
             font-size: 18px;
-        }
-    }
-
-    .history-list {
-        height: 130px;
-
-        &:deep(.swiper-slide) {
-            width: 236px;
-            height: 130px;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-
-            .skins {
-                width: 190px;
-                height: 80px;
-                margin: 0 auto;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                img {
-                    max-width: 100%;
-                    max-height: 100%;
-                }
-            }
-
-            .user {
-                height: 50px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                .avatar {
-                    width: 25px;
-                    height: 25px;
-                }
-
-                p {
-                    height: 25px;
-                    max-width: 180px;
-                    font-size: 16px;
-                    margin-left: 10px;
-                    line-height: 25px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-all;
-                }
-            }
         }
     }
 
