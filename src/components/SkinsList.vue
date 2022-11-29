@@ -22,7 +22,7 @@ function nameColor(data: string) {
             </div>
 
             <!-- 名称 -->
-            <div class="name" :style="nameColor(item.imageData)">
+            <div class="name text-ellipsis" :style="nameColor(item.imageData)">
                 {{ item.goodsName }}
             </div>
 
@@ -77,9 +77,6 @@ function nameColor(data: string) {
             color: white;
             font-size: 16px;
             font-weight: bold;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         .price {
@@ -88,7 +85,8 @@ function nameColor(data: string) {
             justify-content: center;
             color: var(--main-orange-color);
             font-size: 20px;
-            margin-top: 15px;
+            font-weight: bold;
+            margin-top: 10px;
 
             img {
                 width: 28px;

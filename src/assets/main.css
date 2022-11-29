@@ -19,3 +19,9 @@
   font-family: 微软雅黑;
   box-sizing: border-box;
 }
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

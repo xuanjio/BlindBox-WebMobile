@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { API } from '@/api/API';
-import { onMounted, onUpdated, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue';
 import { useRoute, useRouter } from "vue-router";
 import HistoryList from '@/components/HistoryList.vue';
 import SkinsList from '@/components/SkinsList.vue';
+import AvatarFrame from '@/components/AvatarFrame.vue';
 import { Notify } from "vant";
 
 const route = useRoute()
@@ -14,13 +15,30 @@ const openText = ref("一发入魂")
 const openCount = ref(1)
 const animated = ref(true)
 const tabIndex = ref(0)
+const historyData = ref(<any>[])
+let historyTimer: number | null = null
 
 onMounted(() => {
     fetchBoxInfo()
 })
 
+onBeforeUnmount(() => {
+    stopHistoryTimer()
+})
+
 watch(() => route.query, (to) => {
     fetchBoxInfo()
+    boxInfo.value = {}
+    tabIndex.value = 0
+})
+
+watch(() => tabIndex.value, () => {
+    if (tabIndex.value == 0) {
+        stopHistoryTimer()
+    } else if (tabIndex.value == 1) {
+        fetchHistoryData()
+        startHistoryTimer()
+    }
 })
 
 function fetchBoxInfo() {
@@ -60,6 +78,29 @@ function clickBatteryItem(index: number) {
 
 function openBox() {
 
+}
+
+function fetchHistoryData() {
+    const boxId = route.query.id as any
+    API.fetchBlindBoxHistory(boxId, 20, (result) => {
+        if (result.code == 200 && result.data) {
+            historyData.value = result.data
+        }
+    })
+}
+
+function startHistoryTimer() {
+    stopHistoryTimer()
+    historyTimer = setInterval(() => {
+        fetchHistoryData()
+    }, 5000)
+}
+
+function stopHistoryTimer() {
+    if (historyTimer) {
+        clearInterval(historyTimer)
+        historyTimer = null
+    }
 }
 
 </script>
@@ -121,7 +162,20 @@ function openBox() {
 
         <!-- 最近掉落 -->
         <div class="history" v-show="tabIndex == 1">
-
+            <div class="item" v-for="item in historyData">
+                <!-- 头像 -->
+                <div class="avatar">
+                    <AvatarFrame :avatar-url="item.userIcon" :frame-url="item.iconUrl" />
+                </div>
+                <!-- 价格 -->
+                <div class="price">
+                    {{ item.price }}
+                </div>
+                <!-- 名称 -->
+                <div class="name text-ellipsis">
+                    {{ item.goodsName }}
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -129,6 +183,7 @@ function openBox() {
 <style scoped lang="less">
 #blind-box {
     min-height: calc(100vh - 500px);
+    padding-bottom: 60px;
 
     .top {
         width: 750px;
@@ -321,8 +376,42 @@ function openBox() {
         }
     }
 
-    .contain {}
+    .history {
+        padding: 0 20px;
+        box-sizing: border-box;
+        min-height: 500px;
 
-    .history {}
+        .item {
+            height: 110px;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            box-sizing: border-box;
+            background-color: #181C28;
+
+            &:nth-child(2n) {
+                background-color: #20222A;
+            }
+
+            .avatar {
+                width: 60px;
+                height: 60px;
+            }
+
+            .price {
+                width: 150px;
+                font-size: 28px;
+                font-weight: bold;
+                color: var(--main-orange-color);
+                margin-left: 50px;
+            }
+
+            .name {
+                font-size: 22px;
+                margin-left: 10px;
+            }
+        }
+
+    }
 }
 </style>

@@ -86,4 +86,8 @@ export class API {
     static fetchBlindBoxDetail(id: number, complete: APIComplete) {
         this.post("/openBox/getBoxData", {id}, complete)
     }
+
+    static fetchBlindBoxHistory(id: number, size: number, complete: APIComplete) {
+        this.post("/openBox/getDropList", {id, size}, complete)
+    }
 }
