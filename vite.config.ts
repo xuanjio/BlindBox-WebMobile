@@ -12,7 +12,7 @@ export default defineConfig({
     }
   },
   server: {
-    host: '192.168.5.42',
+    host: '192.168.5.6',
     port: 5173,
     open: false, //自动打开 
     base: "./ ", //生产环境路径

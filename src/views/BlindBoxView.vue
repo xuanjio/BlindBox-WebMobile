@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import HistoryList from '@/components/HistoryList.vue';
 import SkinsList from '@/components/SkinsList.vue';
 import AvatarFrame from '@/components/AvatarFrame.vue';
+import TabBar from '@/components/TabBar.vue';
 import { Notify } from "vant";
 
 const route = useRoute()
@@ -47,6 +48,8 @@ function fetchBoxInfo() {
         if (result.code == 200 && result.data && result.data.boxName) {
             boxInfo.value = result.data
             clickBatteryItem(1)
+            // 页面回到顶部
+            document.documentElement.scrollTop = 0
         } else {
             Notify({ type: "danger", message: "箱子已下架！" })
             router.push("/")
@@ -147,9 +150,8 @@ function stopHistoryTimer() {
         </div>
 
         <!-- 切换按钮 -->
-        <div class="tab-bar">
-            <div class="tab-item" :class="{ active: tabIndex == 0 }" @click="tabIndex = 0">盒子包含</div>
-            <div class="tab-item" :class="{ active: tabIndex == 1 }" @click="tabIndex = 1">最近掉落</div>
+        <div class="switch">
+            <TabBar :items="['盒子包含', '最近掉落']" :tab-index="tabIndex" @click-item="(index) => { tabIndex = index }" />
         </div>
 
         <!-- 温馨提示 -->
@@ -332,48 +334,11 @@ function stopHistoryTimer() {
         }
     }
 
-    .tab-bar {
-        display: flex;
-        align-items: center;
+    .switch {
         margin: 0 20px;
         height: 60px;
         box-sizing: border-box;
         border-bottom: var(--main-orange-color) solid 4px;
-
-        .tab-item {
-            width: 256px;
-            height: 60px;
-            text-align: center;
-            line-height: 60px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-
-            &.active {
-                color: var(--main-black-color);
-            }
-
-            &:first-child {
-                background: url(@/assets/images/common/btn_first_unselected.png) no-repeat center;
-                background-size: contain;
-
-                &.active {
-                    background: url(@/assets/images/common/btn_first_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-
-            &:last-child {
-                background: url(@/assets/images/common/btn_last_unselected.png) no-repeat center;
-                background-size: contain;
-                margin-left: -32px;
-
-                &.active {
-                    background: url(@/assets/images/common/btn_last_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-        }
     }
 
     .history {

@@ -3,9 +3,10 @@ import { onMounted, ref } from "vue";
 import { Notify } from "vant";
 import { API } from "@/api/API";
 import { useUserStore } from "@/stores/user";
+import TabBar from "./TabBar.vue";
 
 const emits = defineEmits(["close", "toResetPassword", "toRegister"])
-const mainStore = useUserStore()
+const userStore = useUserStore()
 
 // tabIndex: 0|账号密码登录，1|手机验证码登录
 const tabIndex = ref(0)
@@ -83,8 +84,8 @@ function loginWithAccountAndPassword() {
         if (result.code == 200 && result.data.success) {
             sessionStorage.setItem('API_TOKEN', result.data.data.token)
             sessionStorage.setItem('API_USERID', result.data.data.userId)
-            mainStore.fetchUserInfo()
-            mainStore.fetchUserDetail()
+            userStore.fetchUserInfo()
+            userStore.fetchUserDetail()
             if (isSaved) {
                 localStorage.setItem("BX_ACCOUNT", account.value)
                 localStorage.setItem("BX_PASSWORD", password.value)
@@ -128,9 +129,8 @@ function toRegister() {
             <img src="@/assets/images/sign/icon_close.png" alt="close">
         </div>
         <!-- 账号密码登录/手机验证码登录 -->
-        <div class="tab-bar">
-            <div class="tab-item" :class="{ active: tabIndex == 0 }" @click="tabIndex = 0">账号密码登录</div>
-            <div class="tab-item" :class="{ active: tabIndex == 1 }" @click="tabIndex = 1">手机验证码登录</div>
+        <div class="switch">
+            <TabBar :items="['账号密码登录', '手机验证码登录']" :tab-index="tabIndex" @click-item="(index) => { tabIndex = index }" />
         </div>
         <!-- 账号密码登录 -->
         <div v-show="tabIndex == 0">
@@ -226,46 +226,9 @@ function toRegister() {
         }
     }
 
-    .tab-bar {
-        display: flex;
-        align-items: center;
+    .switch {
         padding-left: 10px;
         padding-top: 34px;
-
-        .tab-item {
-            width: 256px;
-            height: 60px;
-            text-align: center;
-            line-height: 60px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-
-            &.active {
-                color: var(--main-black-color);
-            }
-
-            &:first-child {
-                background: url(@/assets/images/common/btn_first_unselected.png) no-repeat center;
-                background-size: contain;
-
-                &.active {
-                    background: url(@/assets/images/common/btn_first_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-
-            &:last-child {
-                background: url(@/assets/images/common/btn_last_unselected.png) no-repeat center;
-                background-size: contain;
-                margin-left: -32px;
-
-                &.active {
-                    background: url(@/assets/images/common/btn_last_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-        }
     }
 
     .cell {

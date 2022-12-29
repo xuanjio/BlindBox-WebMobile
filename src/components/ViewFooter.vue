@@ -1,4 +1,20 @@
 <script setup lang="ts">
+import { API } from "@/api/API";
+import { ref, onMounted } from "vue";
+
+const openNum = ref(0)
+const regNum = ref(0)
+const onlineNum = ref(0)
+
+onMounted(() => {
+    API.fetchStatisticalData((result) => {
+        if (result.code == 200 && result.data) {
+            openNum.value = result.data.openNum
+            regNum.value = result.data.regNum
+            onlineNum.value = result.data.onlineNum
+        }
+    })
+})
 </script>
 
 <template>
@@ -6,15 +22,15 @@
         <!-- 统计数据 -->
         <div class="statistical">
             <div class="data">
-                <p>4876258</p>
+                <p>{{ openNum }}</p>
                 <p>已开启盲盒总数</p>
             </div>
             <div class="data">
-                <p>985472</p>
+                <p>{{ regNum }}</p>
                 <p>已注册人数</p>
             </div>
             <div class="data">
-                <p>1578</p>
+                <p>{{ onlineNum }}</p>
                 <p>在线人数</p>
             </div>
         </div>
@@ -67,6 +83,7 @@
                 top: 0;
                 background-image: linear-gradient(rgba(255, 255, 255, 0.1), #CCC, rgba(255, 255, 255, 0.1));
             }
+
             &:last-child {
                 &::after {
                     display: none;
@@ -79,10 +96,12 @@
         margin-top: 60px;
         display: flex;
         justify-content: center;
+
         p {
             font-size: 16px;
             padding: 0 20px;
             border-left: 1px solid white;
+
             &:first-child {
                 border-left: none;
             }

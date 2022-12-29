@@ -43,8 +43,6 @@ const menus = [{
     name: "help",
     title: "帮助中心"
 }]
-const avatarUrl = ref("https://95-csgo.oss-cn-beijing.aliyuncs.com/usericon/2022-05-24/36a810538eeb462c8565253188929854.jpg")
-const frameUrl = ref("https://95-csgo.oss-cn-beijing.aliyuncs.com/file/2022-05-16/6c8ed872da224f948ebe56b927f00bdd.png")
 
 function clickItem(name: string) {
     emits('hide')

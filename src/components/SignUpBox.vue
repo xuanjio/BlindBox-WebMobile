@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import TabBar from "./TabBar.vue";
+
 const emits = defineEmits(["close", "toLogin"])
 // tabIndex: 0|手机注册，1|邮箱注册
 const tabIndex = ref(0)
@@ -45,9 +47,8 @@ function toLogin() {
             <img src="@/assets/images/sign/icon_close.png" alt="close">
         </div>
         <!-- 手机注册/邮箱注册 -->
-        <div class="tab-bar">
-            <div class="tab-item" :class="{ active: tabIndex == 0 }" @click="tabIndex = 0">手机注册</div>
-            <div class="tab-item" :class="{ active: tabIndex == 1 }" @click="tabIndex = 1">邮箱注册</div>
+        <div class="switch">
+            <TabBar :items="['手机注册', '邮箱注册']" :tab-index="tabIndex" @click-item="(index) => { tabIndex = index }" />
         </div>
         <!-- 手机号 -->
         <div class="cell" v-show="tabIndex == 0" >
@@ -147,46 +148,9 @@ function toLogin() {
         }
     }
 
-    .tab-bar {
-        display: flex;
-        align-items: center;
+    .switch {
         padding-left: 10px;
         padding-top: 34px;
-
-        .tab-item {
-            width: 256px;
-            height: 60px;
-            text-align: center;
-            line-height: 60px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-
-            &.active {
-                color: var(--main-black-color);
-            }
-
-            &:first-child {
-                background: url(@/assets/images/common/btn_first_unselected.png) no-repeat center;
-                background-size: contain;
-
-                &.active {
-                    background: url(@/assets/images/common/btn_first_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-
-            &:last-child {
-                background: url(@/assets/images/common/btn_last_unselected.png) no-repeat center;
-                background-size: contain;
-                margin-left: -32px;
-
-                &.active {
-                    background: url(@/assets/images/common/btn_last_selected.png) no-repeat center;
-                    background-size: contain;
-                }
-            }
-        }
     }
 
     .cell {

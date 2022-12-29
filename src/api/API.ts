@@ -62,6 +62,11 @@ export class API {
         this.post("/index/ListBoxZone", null, complete)
     }
 
+    // 获取在线统计数据
+    static fetchStatisticalData(complete: APIComplete) {
+        this.post("/index/getNumTotal", null, complete)
+    }
+
     // 注册
     static register(data: any, complete: APIComplete) {
         this.post("/login/register", data, complete)
@@ -84,10 +89,17 @@ export class API {
 
     // 盲盒详情
     static fetchBlindBoxDetail(id: number, complete: APIComplete) {
-        this.post("/openBox/getBoxData", {id}, complete)
+        this.post("/openBox/getBoxData", { id }, complete)
     }
 
+    // 盲盒最近掉落
     static fetchBlindBoxHistory(id: number, size: number, complete: APIComplete) {
-        this.post("/openBox/getDropList", {id, size}, complete)
+        this.post("/openBox/getDropList", { id, size }, complete)
+    }
+
+    // ROLL列表
+    static fetchRollList(type: string, status: number, keyword: string, pageNum: number, pageSize: number, complete: APIComplete) {
+        let data = { sign: type, status: status, name: keyword, pager: { pageNo: pageNum, pageSize } }
+        this.post("/roll/listData", data, complete)
     }
 }
